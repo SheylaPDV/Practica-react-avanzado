@@ -18,8 +18,8 @@ console.log("PASO 1 Variable accesToken trae el token:", accessToken);
 
 // 1  despues de dirige a api/client y ejecuta la funcion configureClient()
 configureClient({ accessToken });
-const store = configureStore();
-window.store = store;
+// con estos parametros indico con que estado va a arrancar redux el store
+const store = configureStore({ auth: !!accessToken, adverts: [] });
 
 ReactDOM.render(
   <React.StrictMode>
