@@ -23,6 +23,9 @@ export const authLoginFailure = (error) => ({
 
 export const authLogout = () => ({
   type: AUTH_LOGOUT,
+  meta: {
+    timestamp: new Date(),
+  },
 });
 
 export const advertsLoaded = (adverts) => ({
