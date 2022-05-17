@@ -14,18 +14,27 @@ import NotFoundPage from "./NotFoundPage";
 // importamos diseño
 import Layout from "../layout";
 
+// -------------------------------------------------------------
+// import {authLogin, authLogout} from './store/actions'
+// -------------------------------------------------------------
+
 // recogemos del padre la propiedad isInitiallyLoged
-function App({ isInitiallyLogged }) {
-  console.log(
-    " PASO 4 llegamos a App y le pasamos la prop:",
-    isInitiallyLogged
-  );
+
+function App({ isInitiallyLogged /*store */ }) {
+  // console.log(
+  //   " PASO 4 llegamos a App y le pasamos la prop:",
+  //   isInitiallyLogged
+  // );
   // inicializamos el estado en false
   const [isLogged, setIsLogged] = useState(isInitiallyLogged);
-  console.log("PASO 5 isLogged vale:", isLogged);
-  const handleLogin = () => setIsLogged(true);
+  // console.log("PASO 5 isLogged vale:", isLogged);
 
-  const handleLogout = () => setIsLogged(false);
+  const handleLogin = () => {
+    setIsLogged(true);
+  };
+  const handleLogout = () => {
+    setIsLogged(false);
+  };
 
   const authProps = { isLogged, handleLogin, handleLogout };
   console.log(" PASO 6 La variable authProps:", authProps);

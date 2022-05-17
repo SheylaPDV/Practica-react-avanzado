@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
-import T from 'prop-types';
+import { Link } from "react-router-dom";
+import T from "prop-types";
 
-import { ConfirmationButton } from '../../common';
-import { AuthConsumer } from '../context';
-import { logout } from '../service';
-import useMutation from '../../../hooks/useMutation';
+import { ConfirmationButton } from "../../common";
+import { AuthConsumer } from "../context";
+import { logout } from "../service";
+import useMutation from "../../../hooks/useMutation";
 
 const AuthButton = ({ handleLogout, isLogged }) => {
   const mutation = useMutation(logout);
@@ -35,8 +35,8 @@ AuthButton.defaultProps = {
   isLogged: false,
 };
 
-const ConnectedAuthButton = props => (
-  <AuthConsumer>{auth => <AuthButton {...auth} {...props} />}</AuthConsumer>
+const ConnectedAuthButton = (props) => (
+  <AuthConsumer>{(auth) => <AuthButton {...auth} {...props} />}</AuthConsumer>
 );
 
 export default ConnectedAuthButton;
