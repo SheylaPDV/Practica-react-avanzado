@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import * as reducers from "./reducers";
 import { composeWithDevTools } from "@redux-devtools/extension";
 
-// Middelewware
+// EJEMPLOS DE Middelewware
 
 function logger(store) {
   return function (next) {
@@ -14,12 +14,38 @@ function logger(store) {
     };
   };
 }
+
+const timestamp = () => (next) => (action) => {
+  const newAction = {
+    ...action,
+    meta: {
+      ...action.meta,
+      timestamp: new Date(),
+    },
+  };
+  next(newAction);
+};
+
+// EJEMPLO DE MIDDLEWARE CON MODULO REDUX THUNK(SOLO ADMITE FUNCIONES)
+
+const thunk =
+  ({ dispatch, getState }) =>
+  (next) =>
+  (action) => {
+    // Si la accion es una funcion :
+    if (typeof action === "function") {
+      // la ejecutamos y pasamnos parametros (action es la funcion del fichero actions)
+      action(dispatch, getState);
+    }
+    // solo sabe poasar funciones, pasamos al siguiente de la cadena el resultaod
+    return next(action);
+  };
 // nos creamos el store apsandole el reducer
 // Es obligatorio pasa rl reducer
 //
 const configureStore = ({ preloadedState }) => {
-  // metemos los middlewares en un array
-  const middlewares = [logger];
+  // metemos los middlewares en un array(el que ponemos mas a la derecha., es el que estra pegado al dispatch)
+  const middlewares = [thunk, logger, timestamp];
   const store = createStore(
     combineReducers(reducers),
     preloadedState,

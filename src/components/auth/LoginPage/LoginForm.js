@@ -1,6 +1,6 @@
-import T from 'prop-types';
-
-import useForm from '../../../hooks/useForm';
+import T from "prop-types";
+// import { useDispatch, useSelector } from "react-redux";
+import useForm from "../../../hooks/useForm";
 
 const validEmail = ({ email }) => email;
 const validPassword = ({ password }) => password;
@@ -12,10 +12,11 @@ function LoginForm({ onSubmit }) {
     handleSubmit,
     validate,
   } = useForm({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     remember: false,
   });
+
   const { email, password, remember } = credentials;
 
   return (

@@ -21,6 +21,10 @@ export const authLoginFailure = (error) => ({
   error: true,
 });
 
+export const authLogin = () => {
+  return function (dispatch, getState) {};
+};
+
 export const authLogout = () => ({
   type: AUTH_LOGOUT,
   meta: {
