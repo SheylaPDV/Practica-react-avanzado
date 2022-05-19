@@ -2,7 +2,7 @@ import {
   AUTH_LOGIN_FAILURE,
   AUTH_LOGIN_REQUEST,
   AUTH_LOGIN_SUCCESS,
-  AUTH_LOGOUT,
+  AUTH_LOGOUT_SUCCESS,
   ADVERTS_LOADED,
   UI_RESET_ERROR,
 } from "./types";
@@ -39,7 +39,7 @@ export const auth = (state = defaultState.auth, action) => {
   switch (action.type) {
     case AUTH_LOGIN_SUCCESS:
       return true;
-    case AUTH_LOGOUT:
+    case AUTH_LOGOUT_SUCCESS:
       return false;
     default:
       return state;
