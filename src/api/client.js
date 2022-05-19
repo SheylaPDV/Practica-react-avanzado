@@ -29,16 +29,17 @@ client.interceptors.response.use(
     });
   }
 );
-// 2 funcion donde entra el token
 export const configureClient = ({ accessToken }) => {
+  // 2 funcion donde entra el token
+
   console.log(
     "PASO 2 despues en configureClient se comprueba si hay token:",
     accessToken
   );
-  // 3 comprueba si hay token
   if (accessToken) {
-    // 4 si hay token: llama a la funcion setAuthorizationHeader y le pasa el token a la funcion
-    setAuthorizationHeader(accessToken);
+    // 3 comprueba si hay token
+
+    setAuthorizationHeader(accessToken); // 4 si hay token: llama a la funcion setAuthorizationHeader y le pasa el token a la funcion
   }
 };
 

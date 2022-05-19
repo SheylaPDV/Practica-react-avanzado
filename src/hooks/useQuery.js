@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 function useQuery(query) {
   const [data, setData] = React.useState(undefined);
