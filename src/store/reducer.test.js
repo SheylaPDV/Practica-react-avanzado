@@ -48,9 +48,9 @@ describe("auth", () => {
   });
 });
 
-describe("adverts", () => {
-  it("should manage ADVERTS_LOADED_SUCCESS action", () => {
-    const action = { type: ADVERTS_LOADED, payload: [] };
-  });
-});
+// describe("adverts", () => {
+//   it("should manage ADVERTS_LOADED_SUCCESS action", () => {
+//     const action = { type: ADVERTS_LOADED, payload: [] };
+//   });
+// });
 // ESTE TEST ESTA SIN TERMINAR!!!
