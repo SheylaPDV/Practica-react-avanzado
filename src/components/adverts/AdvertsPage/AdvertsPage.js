@@ -13,11 +13,8 @@ const getFilters = () => storage.get("filters") || defaultFilters;
 const saveFilters = (filters) => storage.set("filters", filters);
 
 function AdvertsPage() {
-  // guartdao los filtros en la query-?
   const { isLoading, error, data: adverts = [] } = useQuery(getAdverts);
-  // estado de los filtros
   const [filters, setFilters] = useState(getFilters);
-  // guarda filtros
   useEffect(() => {
     saveFilters(filters);
   }, [filters]);
@@ -30,7 +27,6 @@ function AdvertsPage() {
 
   return (
     <>
-      {/* si anuncios es mayor a 0 and (filtros) */}
       {adverts.length > 0 && (
         <FiltersForm
           initialFilters={filters}

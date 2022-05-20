@@ -12,7 +12,7 @@ import "./index.css";
 import App from "./components/app";
 // importamos configureStore de redux
 import configureStore from "./store";
-import { Provider } from "react-redux";
+// import { Provider } from "react-redux";
 // Aqui nos traemos de local storage el TOKEN
 const accessToken = storage.get("auth");
 // console.log("PASO 1 Variable accesToken trae el token:", accessToken);
@@ -24,16 +24,14 @@ configureClient({ accessToken });
 // con estos parametros indico con que estado va a arrancar redux el store
 const store = configureStore({ auth: !!accessToken, adverts: [], ui: null });
 // -------------------------------------------------------------
-
+console.log(store);
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <Router>
-        {/* metemos como propiedad en el padre el token */}
-        <App isInitiallyLogged={!!accessToken} />
-        {/* <App store={store} /> */}
-      </Router>
-    </Provider>
+    <Router>
+      {/* metemos como propiedad en el padre el token */}
+      <App isInitiallyLogged={!!accessToken} />
+      {/* <App store={store} /> */}
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );

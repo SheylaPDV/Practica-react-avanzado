@@ -7,9 +7,6 @@ const client = axios.create({
 const setAuthorizationHeader = (token) => {
   // 6 metemos en la cabecera Authorization, el token que nos llega con Bearer{token que traemos}
   client.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  console.log(
-    "PASO 3 LLamamos a la funcion setAuthorizationHEader y Metemos token en Authorization que esta en el headers "
-  );
 };
 
 const removeAuthorizationHeader = () => {
@@ -32,10 +29,6 @@ client.interceptors.response.use(
 export const configureClient = ({ accessToken }) => {
   // 2 funcion donde entra el token
 
-  console.log(
-    "PASO 2 despues en configureClient se comprueba si hay token:",
-    accessToken
-  );
   if (accessToken) {
     // 3 comprueba si hay token
 
