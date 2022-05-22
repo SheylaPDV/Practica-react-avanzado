@@ -7,10 +7,6 @@ import { AuthProvider } from "../auth/context";
 import NotFoundPage from "./NotFoundPage";
 import Layout from "../layout";
 
-// -------------------------------------------------------------
-// import {authLogin, authLogout} from './store/actions'
-// -------------------------------------------------------------
-
 function App({ isInitiallyLogged /*store */ }) {
   const [isLogged, setIsLogged] = useState(isInitiallyLogged);
 

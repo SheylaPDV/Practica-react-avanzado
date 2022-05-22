@@ -1,5 +1,4 @@
 import T from "prop-types";
-// import { useDispatch, useSelector } from "react-redux";
 import useForm from "../../../hooks/useForm";
 
 const validEmail = ({ email }) => email;

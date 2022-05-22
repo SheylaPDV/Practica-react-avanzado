@@ -10,7 +10,6 @@ function EmptyList({ advertsCount }) {
       {advertsCount > 0 ? (
         "Refine your search"
       ) : (
-        // si no hay nungun anuncio, aparece un enlace para subir nuevo anuncio
         <Link to="/adverts/new">Create the first advert</Link>
       )}
     </div>
@@ -18,7 +17,6 @@ function EmptyList({ advertsCount }) {
 }
 
 EmptyList.propTypes = {
-  // tipo numero
   advertsCount: T.number.isRequired,
 };
 

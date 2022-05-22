@@ -1,4 +1,4 @@
-import { getAreAdvertsLoaded, getAdvert } from "./selectors";
+import { getAreAdvertsLoaded, getTags } from "./selectors";
 import {
   AUTH_LOGIN_FAILURE,
   AUTH_LOGIN_REQUEST,
@@ -12,6 +12,14 @@ import {
   ADVERT_LOADED_FAILURE,
   ADVERT_LOADED_SUCCESS,
   UI_RESET_ERROR,
+  ADVERT_DELETED_SUCCESS,
+  ADVERT_DELETED_FAILURE,
+  ADVERT_DELETED_REQUEST,
+  ADVERT_LOADED_REQUEST,
+  ADVERT_CREATED_REQUEST,
+  TAGS_LOADED_REQUEST,
+  TAGS_LOADED_SUCCESS,
+  TAGS_LOADED_FAILURE,
 } from "./types";
 
 export const authLoginRequest = () => ({
@@ -69,13 +77,13 @@ export const advertsLoadedFailure = (error) => ({
   error: true,
 });
 
-// le paso los anuncios en el payload para que el reducer los pueda recoger y passaarlos a redux
 export const advertsLoaded = () => {
   return async function (dispatch, getState, { api }) {
     const advertsLoaded = getAreAdvertsLoaded(getState());
     if (advertsLoaded) return;
 
     dispatch(advertsLoadedRequest());
+
     try {
       const adverts = await api.adverts.getLatestAdverts();
       console.log(adverts);
@@ -85,6 +93,10 @@ export const advertsLoaded = () => {
     }
   };
 };
+
+export const advertLoadedRequest = () => ({
+  type: ADVERT_LOADED_REQUEST,
+});
 
 export const advertLoadedSuccess = (advert) => ({
   type: ADVERT_LOADED_SUCCESS,
@@ -99,10 +111,9 @@ export const advertLoadedFailure = (error) => ({
 
 export const advertLoaded = (advertId) => {
   return async function (dispatch, getState, { api, history }) {
-    const advertLoaded = getAdvert(advertId)(getState());
-    if (advertLoaded) return;
-
-    // dispatch(tweetLoadedRequest());
+    const advertsLoaded = getAreAdvertsLoaded(getState());
+    if (advertsLoaded) return;
+    dispatch(advertLoadedRequest());
     try {
       const advert = await api.adverts.getAdvert(advertId);
       dispatch(advertLoadedSuccess(advert));
@@ -112,57 +123,91 @@ export const advertLoaded = (advertId) => {
   };
 };
 
-// export const advertCreatedSuccess = advert => ({
-//   type: ADVERT_CREATED_SUCCESS,
-//   payload: advert,
-// });
+export const advertCreatedRequest = () => ({
+  type: ADVERT_CREATED_REQUEST,
+});
 
-// export const advertCreatedFailure = error => ({
-//   type: ADVERT_CREATED_FAILURE,
-//   payload: error,
-//   error: true,
-// });
+export const advertCreatedSuccess = (advert) => ({
+  type: ADVERT_CREATED_SUCCESS,
+  payload: advert,
+});
 
-// import {
-//   AUTH_LOGIN_FAILURE,
-//   AUTH_LOGIN_REQUEST,
-//   AUTH_LOGIN_SUCCESS,
-//   AUTH_LOGOUT,
-//   ADVERTS_LOADED,
-//   UI_RESET_ERROR,
-//   AUTH_LOGOUT_SUCCESS,
-// } from "./types";
+export const advertCreatedFailure = (error) => ({
+  type: ADVERT_CREATED_FAILURE,
+  payload: error,
+  error: true,
+});
 
-// export const authLoginRequest = () => ({
-//   type: AUTH_LOGIN_REQUEST,
-// });
+export const advertCreated = (advert) => {
+  return async function (dispatch, _getState, { api, history }) {
+    dispatch(advertCreatedRequest());
+    try {
+      const { id } = await api.adverts.createAdvert(advert);
+      const createdAdvert = await api.adverts.getAdvert(id);
+      dispatch(advertCreatedSuccess(createdAdvert));
+      return createdAdvert;
+    } catch (error) {
+      dispatch(advertCreatedFailure(error));
+    }
+  };
+};
 
-// export const authLoginSuccess = () => ({
-//   type: AUTH_LOGIN_SUCCESS,
-// });
+export const advertsDeletedRequest = () => ({
+  type: ADVERT_DELETED_REQUEST,
+});
 
-// export const authLoginFailure = (error) => ({
-//   type: AUTH_LOGIN_FAILURE,
-//   payload: error,
-//   error: true,
-// });
+export const advertDeletedSuccess = (advert) => ({
+  type: ADVERT_DELETED_SUCCESS,
+  payload: advert,
+});
 
-// export const authLogin = () => {
-//   return function (dispatch, getState) {};
-// };
+export const advertDeletedFailure = (error) => ({
+  type: ADVERT_DELETED_FAILURE,
+  payload: error,
+  error: true,
+});
 
-// export const authLogout = () => ({
-//   type: AUTH_LOGOUT_SUCCESS,
-//   meta: {
-//     timestamp: new Date(),
-//   },
-// });
+export const deletedAdvert = (advertId) => {
+  return async function (dispatch, getState, { api, history }) {
+    dispatch(advertsDeletedRequest());
+    try {
+      const deletedAdvert = await api.adverts.deleteAdvert(advertId);
+      dispatch(advertDeletedSuccess(advertId));
+    } catch (error) {
+      dispatch(advertDeletedFailure(error));
+    }
+  };
+};
 
-// export const advertsLoaded = (adverts) => ({
-//   type: ADVERTS_LOADED,
-//   payload: adverts,
-// });
+export const tagsLoadedRequest = () => ({
+  type: TAGS_LOADED_REQUEST,
+});
 
-// export const uiResetError = () => ({
-//   type: UI_RESET_ERROR,
-// });
+export const tagsLoadedSuccess = (tags) => ({
+  type: TAGS_LOADED_SUCCESS,
+  payload: tags,
+});
+
+export const tagsLoadedFailure = (error) => ({
+  type: TAGS_LOADED_FAILURE,
+  payload: error,
+  error: true,
+});
+
+export const tagsLoaded = () => {
+  return async function (dispatch, getState, { api }) {
+    const tagsLoaded = getTags(getState());
+    if (tagsLoaded) return;
+    dispatch(tagsLoadedRequest());
+    try {
+      const tags = await api.adverts.getTags();
+      dispatch(tagsLoadedSuccess(tags));
+    } catch (error) {
+      dispatch(tagsLoadedFailure(error));
+    }
+  };
+};
+
+export const uiResetError = () => ({
+  type: UI_RESET_ERROR,
+});

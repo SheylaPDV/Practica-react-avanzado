@@ -1,24 +1,16 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useAuthContext } from "../context";
-import { login } from "../service";
 import LoginForm from "./LoginForm";
-import useMutation from "../../../hooks/useMutation";
+import { authLogin } from "../../../store/actions";
+import { getUi } from "../../../store/selectors";
 
 function LoginPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { handleLogin } = useAuthContext();
-  const { isLoading, error, execute, resetError } = useMutation(login);
+  const dispatch = useDispatch();
+  const { isLoading, error, resetError } = useSelector(getUi);
 
   const handleSubmit = (credentials) => {
-    execute(credentials)
-      .then(handleLogin)
-      .then(() => {
-        const from = location.state?.from?.pathname || "/";
-        navigate(from, { replace: true });
-      });
+    dispatch(authLogin(credentials));
   };
 
   return (

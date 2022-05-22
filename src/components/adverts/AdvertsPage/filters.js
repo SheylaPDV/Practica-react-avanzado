@@ -15,10 +15,6 @@ export const defaultFilters = {
   tags: [],
 };
 
-// Individual filters are in form
-// filterValue => advert => Boolean
-// filtros individuales
-// filtro por nombre:
 const filterByName =
   (filter) =>
   ({ name }) => {
@@ -47,20 +43,6 @@ const filterBySale =
       sale ? saleFilter.sell.value : saleFilter.buy.value,
     ].includes(filter);
 
-// const filterBySale =
-//   filter =>
-//   ({ sale }) => {
-//     if (filter === saleFilter.all.value) {
-//       return true;
-//     }
-//     if (filter === saleFilter.sell.value) {
-//       return sale;
-//     }
-//     if (filter === saleFilter.buy.value) {
-//       return !sale;
-//     }
-//   };
-// filtro por tags
 const filterByTags =
   (filter) =>
   ({ tags }) =>

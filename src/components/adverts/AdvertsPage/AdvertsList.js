@@ -18,7 +18,6 @@ function Advert({ name, sale, price, tags }) {
 Advert.propTypes = {
   ...advert,
 };
-// En la pagina adverts muesttra todos los anuncios
 function AdvertsList({ adverts }) {
   const renderAdvert = ({ id, ...advert }) => (
     <li key={id}>

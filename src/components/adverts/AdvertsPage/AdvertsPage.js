@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
-
+import { advertsLoaded } from "../../../store/actions";
 import FiltersForm from "./FiltersForm";
 import AdvertsList from "./AdvertsList";
 import EmptyList from "./EmptyList";
 import storage from "../../../utils/storage";
-// import { getAdverts } from "../service";
 import { defaultFilters, filterAdverts } from "./filters";
-import useQuery from "../../../hooks/useQuery";
-
 import { useDispatch, useSelector } from "react-redux";
 import { getAdverts } from "../../../store/selectors";
-import { advertsLoaded } from "../../../store/actions";
 
 const getFilters = () => storage.get("filters") || defaultFilters;
-
 const saveFilters = (filters) => storage.set("filters", filters);
 
 const useAdverts = () => {
@@ -28,19 +22,15 @@ const useAdverts = () => {
   return adverts;
 };
 
-function AdvertsPage() {
+const AdvertsPage = () => {
   const adverts = useAdverts();
-  const filteredAdverts = adverts;
-  const filters = getFilters();
-  // const filteredAdverts = filterAdverts(adverts, filters);
 
-  // guartdao los filtros en la query-?
-  // const { isLoading, error, data: adverts = [] } = useQuery(getAdverts);
-  // estado de los filtros
+  const [filters, setFilters] = useState(getFilters);
+  useEffect(() => {
+    saveFilters(filters);
+  }, [filters]);
 
-  // if (error?.statusCode === 401) {
-  //   return <Navigate to="/login" />;
-  // }
+  const filteredAdverts = filterAdverts(adverts, filters);
 
   return (
     <>
@@ -49,7 +39,7 @@ function AdvertsPage() {
           initialFilters={filters}
           defaultFilters={defaultFilters}
           prices={adverts.map(({ price }) => price)}
-          onFilter={saveFilters}
+          onFilter={setFilters}
         />
       )}
       {filteredAdverts.length ? (
@@ -59,6 +49,6 @@ function AdvertsPage() {
       )}
     </>
   );
-}
+};
 
 export default AdvertsPage;

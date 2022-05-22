@@ -1,68 +1,120 @@
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import * as reducers from "./reducers";
 import { composeWithDevTools } from "@redux-devtools/extension";
-const configureStore = (preloadedState) => {
-  const store = createStore(
-    combineReducers(reducers),
-    preloadedState,
-    composeWithDevTools()
-  );
-  return store;
+import thunk from "redux-thunk";
+
+import * as adverts from "../components/adverts/service";
+import * as auth from "../components/auth/service";
+import {
+  AUTH_LOGIN_SUCCESS,
+  HISTORY_BACK,
+  ADVERT_CREATED_SUCCESS,
+  ADVERT_DELETED_SUCCESS,
+} from "./types";
+
+const api = { auth, adverts };
+
+function logger(store) {
+  return function (next) {
+    return function (action) {
+      console.log("before action", action, store.getState());
+      const result = next(action);
+      console.log("after action", action, store.getState());
+      return result;
+    };
+  };
+}
+
+const timestamp = () => (next) => (action) => {
+  const newAction = {
+    ...action,
+    meta: {
+      ...action.meta,
+      timestamp: new Date(),
+    },
+  };
+  return next(newAction);
 };
 
+const failureRedirections =
+  (history, redirections) => (_store) => (next) => (action) => {
+    const result = next(action);
+    if (action.error) {
+      const redirection = redirections[action.payload.status];
+      if (redirection) {
+        history.push(redirection);
+      }
+      // if (action.payload.status === 401) {
+      //   // redirect to login
+      //   history.push('/login');
+      // }
+      // if (action.payload.status === 404) {
+      //   // redirect to 404
+      //   history.push('/404');
+      // }
+    }
+
+    return result;
+  };
+
+const successRedirections =
+  (history, redirections) => (_store) => (next) => (action) => {
+    const result = next(action);
+    const redirection = redirections[action.type];
+    if (redirection) {
+      redirection(history, action.payload);
+    }
+
+    return result;
+  };
+
+const rootReducer = combineReducers(reducers);
+
+const historyHighOrderReducer = (rootReducer) => {
+  return (state, action) => {
+    const { history, ...rootState } = state;
+    if (action.type === HISTORY_BACK) {
+      const newHistory = history.slice(0, history.length - 1);
+      return {
+        ...newHistory[newHistory.length - 1].state,
+        history: newHistory,
+      };
+    }
+    const newState = rootReducer(rootState, action);
+    return {
+      ...newState,
+      history: [...(history || []), { action, state: newState }],
+    };
+  };
+};
+
+const configureStore = (preloadedState, { history }) => {
+  const middlewares = [
+    thunk.withExtraArgument({ api, history }),
+    failureRedirections(history, { 401: "/login", 404: "/404" }),
+    successRedirections(history, {
+      [AUTH_LOGIN_SUCCESS]: (history) => {
+        const from = history.location.state?.from?.pathname || "/";
+        history.replace(from);
+      },
+      [ADVERT_CREATED_SUCCESS]: (history, payload) => {
+        history.push(`/adverts/${payload.id}`);
+      },
+      [ADVERT_DELETED_SUCCESS]: (history) => {
+        history.replace("/adverts");
+      },
+    }),
+    logger,
+    timestamp,
+    // allState,
+  ];
+
+  const store = createStore(
+    historyHighOrderReducer(rootReducer),
+    preloadedState,
+    composeWithDevTools(applyMiddleware(...middlewares))
+  );
+
+  return store;
+};
 export default configureStore;
-
-// EJEMPLOS DE Middelewware
-
-// function logger(store) {
-//   return function (next) {
-//     return function (action) {
-//       console.log("before action", action, store.getStore());
-//       // le paso la acccion al sguiente de la cadena
-//       next(action);
-//       console.log("after action", action, store.getStore());
-//     };
-//   };
-// }
-
-// const timestamp = () => (next) => (action) => {
-//   const newAction = {
-//     ...action,
-//     meta: {
-//       ...action.meta,
-//       timestamp: new Date(),
-//     },
-//   };
-//   next(newAction);
-// };
-
-// EJEMPLO DE MIDDLEWARE CON MODULO REDUX THUNK(SOLO ADMITE FUNCIONES)
-
-// const thunk =
-//   ({ dispatch, getState }) =>
-//   (next) =>
-//   (action) => {
-//     // Si la accion es una funcion :
-//     if (typeof action === "function") {
-//       // la ejecutamos y pasamnos parametros (action es la funcion del fichero actions)
-//       action(dispatch, getState);
-//     }
-//     // solo sabe poasar funciones, pasamos al siguiente de la cadena el resultaod
-//     return next(action);
-//   };
-
-// nos creamos el store apsandole el reducer
-// Es obligatorio pasa rl reducer
-// Pasamos la cadena de middlewares aqui
-
-// const configureStore = ({ preloadedState }) => {
-//   // metemos los middlewares en un array(el que ponemos mas a la derecha., es el que estra pegado al dispatch)
-//   const middlewares = [logger];
-//   const store = createStore(
-//     combineReducers(reducers),
-//     preloadedState,
-//     composeWithDevTools(applyMiddleware(...middlewares)) //los metemos haciendo speed  operator
-//   );
-//   return store;
-// };
-// export default configureStore;

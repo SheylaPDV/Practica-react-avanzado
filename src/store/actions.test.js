@@ -1,31 +1,38 @@
-// // PRIMER PASO, IMPORTAR LAS COSAS QUE QUEREMOS TESTEAR
-// import { authLoginRequest, advertsLoaded } from "./actions";
-// import { ADVERTS_LOADED, AUTH_LOGIN_REQUEST } from "./types";
+import { authLogin, authLoginRequest } from "./actions";
+import { AUTH_LOGIN_REQUEST, AUTH_LOGIN_SUCCESS } from "./types";
 
-// // CREAR UN BLOQUE CON LA FUNCION DESCRIBE(PARA ORGANIZAR)
-// describe("authLoginRequest", () => {
-//   // DESCRIPCION DE LO QUE DEBERIA RETORNAR LA FUNCION AUTHLOGINREQUEST()
-//   test("Should return an AUTH_LOGIN_REQUEST action", () => {
-//     // FUNCION DONDE HACEMOS NUESTRO TEST
-//     // ESTA ES LA ACCION QUE ESPERO QUE ESTA FUNCION ME DEVUELVA UN OBJETO
-//     const expectedAction = {
-//       type: AUTH_LOGIN_REQUEST,
-//     };
-//     // ESTE ES EL RESULTADO QUE ME DA LA FUNCION CVUANDO YO LA LLAMO
-//     const result = authLoginRequest();
-//     // PARA HACER EL TEST
-//     expect(result).toEqual(expectedAction);
-//   });
-// });
+describe("authLoginRequest", () => {
+  test("should return an AUTH_LOGIN_REQUEST action", () => {
+    const expectedAction = {
+      type: AUTH_LOGIN_REQUEST,
+    };
+    const result = authLoginRequest();
+    expect(result).toEqual(expectedAction);
+  });
+});
 
-// describe("advertsLoaded", () => {
-//   test("Should return an ADVERTS_LOADED action", () => {
-//     const adverts = "adverts";
-//     const expectedAction = {
-//       type: ADVERTS_LOADED,
-//       payload: adverts,
-//     };
-//     const result = advertsLoaded(adverts);
-//     expect(result).toEqual(expectedAction);
-//   });
-// });
+describe("authLogin", () => {
+  const credentials = {
+    email: "shey@gmail.com",
+    password: "1234",
+  };
+  const action = authLogin(credentials);
+  const dispatch = jest.fn();
+  const api = {
+    auth: {},
+  };
+  const history = {
+    location: {},
+    replace: jest.fn(),
+  };
+  describe("when login api resolves", () => {
+    test("should follow the login flow", async () => {
+      api.auth.login = jest.fn().mockResolvedValue();
+      await action(dispatch, undefined, { api, history });
+      expect(dispatch).toHaveBeenNthCalledWith(1, { type: AUTH_LOGIN_REQUEST });
+      expect(api.auth.login).toHaveBeenCalledWith(credentials);
+      expect(dispatch).toHaveBeenNthCalledWith(2, { type: AUTH_LOGIN_SUCCESS });
+      expect(history.replace).toHaveBeenCalledWith("/");
+    });
+  });
+});
