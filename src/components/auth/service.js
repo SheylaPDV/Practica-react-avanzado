@@ -3,6 +3,20 @@ import storage from "../../utils/storage";
 
 const authPath = "/auth";
 
+// export const login = ({ remember, ...credentials }) => {
+//   return client
+//     .post(`${authPath}/login`, credentials)
+//     .then(({ accessToken }) => {
+//       configureClient({ accessToken });
+//       return accessToken;
+//     })
+//     .then((accessToken) => {
+//       storage.remove("auth");
+//       if (remember) {
+//         storage.set("auth", accessToken);
+//       }
+//     });
+// };
 export const login = ({ remember, ...credentials }) => {
   return client
     .post(`${authPath}/login`, credentials)
